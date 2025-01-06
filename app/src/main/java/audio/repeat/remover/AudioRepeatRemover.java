@@ -26,7 +26,24 @@ public class AudioRepeatRemover {
         }
         File[] selectedFiles = fileChooser.getSelectedFiles();
 
-        for (File selectedFile : selectedFiles) {
+        // List selected files in the console
+        System.out.println("Selected files:");
+        for (File file : selectedFiles) {
+            System.out.println(file.getAbsolutePath());
+        }
+
+        // Create and display a progress bar
+        JProgressBar progressBar = new JProgressBar(0, selectedFiles.length);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        JFrame frame = new JFrame("Processing Files");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 100);
+        frame.add(progressBar);
+        frame.setVisible(true);
+
+        for (int fileIndex = 0; fileIndex < selectedFiles.length; fileIndex++) {
+            File selectedFile = selectedFiles[fileIndex];
             String inputFilePath = selectedFile.getAbsolutePath();
             
             // Generate output file path
@@ -70,7 +87,13 @@ public class AudioRepeatRemover {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            // Update progress bar
+            progressBar.setValue(fileIndex + 1);
         }
+
+        // Close the progress bar frame
+        frame.dispose();
     }
 
     private static Set<Integer> detectRepeatedSegments(List<float[]> fingerprints) {
